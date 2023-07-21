@@ -1,0 +1,4 @@
+/venv
+/modules/config.py
+/__pycache__
+/modules/logic_process
