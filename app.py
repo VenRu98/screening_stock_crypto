@@ -2,7 +2,9 @@ import json
 import requests
 from flask import Flask, request
 from modules.imapprocessing import *
-from scannertradingview import ScannerTradingview
+from modules.scanners_tradingview.scannertradingviewstock import ScannerTradingviewStock
+from modules.scanners_tradingview.scannertradingviewcryptolong import ScannerTradingviewCryptoLong
+from modules.scanners_tradingview.scannertradingviewcryptoshort import ScannerTradingviewCryptoShort
 
 app = Flask(__name__)
 
@@ -28,7 +30,8 @@ def crypto_short_screening():
 
 @app.route('/crypto_long_screening_debug', methods=['POST'])
 def crypto_long_screening_debug():
-    data = json.loads(request.data)['data']
+    scanner = ScannerTradingviewCryptoLong()
+    data = scanner.getDataScanner()
     process = ImapProcessing()
     process.long_crypto_signal_debug(data)
     return "<h1>Stock Screening Has Send to Telegram</h1>"
@@ -36,7 +39,8 @@ def crypto_long_screening_debug():
 
 @app.route('/crypto_short_screening_debug', methods=['POST'])
 def crypto_short_screening_debug():
-    data = json.loads(request.data)['data']
+    scanner = ScannerTradingviewCryptoShort()
+    data = scanner.getDataScanner()
     process = ImapProcessing()
     process.short_crypto_signal_debug(data)
     return "<h1>Stock Screening Has Send to Telegram</h1>"
@@ -51,7 +55,7 @@ def stock_screening():
 
 @app.route('/stock_screening_debug', methods=['POST'])
 def stock_screening_debug():
-    scanner = ScannerTradingview()
+    scanner = ScannerTradingviewStock()
     data = scanner.getDataScanner()
     process = ImapProcessing()
     process.stock_signal_debug(data)

@@ -3,128 +3,104 @@ import json
 from object_types.tradingviewmodel import *
 
 
-class ScannerTradingview:
+class ScannerTradingviewCryptoShort:
     def __init__(self):
         self.requestJson = '''{
             "filter": [
                 {
-                    "left": "type",
-                    "operation": "in_range",
-                    "right": [
-                        "stock",
-                        "dr",
-                        "fund"
-                    ]
-                },
-                {
-                    "left": "subtype",
-                    "operation": "in_range",
-                    "right": [
-                        "common",
-                        "foreign-issuer",
-                        "",
-                        "etf",
-                        "etf,odd",
-                        "etf,otc",
-                        "etf,cfd"
-                    ]
+                    "left": "exchange",
+                    "operation": "equal",
+                    "right": "BINANCE"
                 },
                 {
                     "left": "volume",
-                    "operation": "egreater",
-                    "right": 1000000
-                },
-                {
-                    "left": "change",
-                    "operation": "greater",
-                    "right": 1
+                    "operation": "in_range",
+                    "right": [
+                        1000,
+                        9007199254740991
+                    ]
                 },
                 {
                     "left": "change_from_open",
-                    "operation": "greater",
+                    "operation": "less",
                     "right": 0
                 },
                 {
                     "left": "change_from_open_abs",
-                    "operation": "greater",
+                    "operation": "less",
                     "right": 0
                 },
                 {
                     "left": "RSI",
-                    "operation": "egreater",
-                    "right": 30
+                    "operation": "eless",
+                    "right": 70
                 },
                 {
                     "left": "RSI7",
-                    "operation": "egreater",
-                    "right": 30
-                },
-                {
-                    "left": "is_primary",
-                    "operation": "equal",
-                    "right": true
+                    "operation": "eless",
+                    "right": 70
                 },
                 {
                     "left": "EMA5",
-                    "operation": "less",
+                    "operation": "greater",
                     "right": "close"
                 },
                 {
                     "left": "EMA10",
-                    "operation": "less",
+                    "operation": "greater",
                     "right": "close"
                 },
                 {
                     "left": "Stoch.K",
-                    "operation": "egreater",
-                    "right": 20
+                    "operation": "eless",
+                    "right": 80
                 },
                 {
                     "left": "Stoch.D",
-                    "operation": "egreater",
-                    "right": 20
+                    "operation": "eless",
+                    "right": 80
                 },
                 {
                     "left": "CCI20",
-                    "operation": "egreater",
-                    "right": -100
+                    "operation": "eless",
+                    "right": 100
                 },
                 {
                     "left": "HullMA9",
-                    "operation": "less",
+                    "operation": "greater",
                     "right": "close"
                 },
                 {
                     "left": "Stoch.RSI.K",
-                    "operation": "egreater",
-                    "right": 20
+                    "operation": "eless",
+                    "right": 80
                 },
                 {
                     "left": "Stoch.RSI.D",
-                    "operation": "egreater",
-                    "right": 20
+                    "operation": "eless",
+                    "right": 80
                 },
                 {
                     "left": "W.R",
-                    "operation": "greater",
-                    "right": -80
+                    "operation": "less",
+                    "right": -20
                 },
                 {
                     "left": "VWAP",
-                    "operation": "less",
+                    "operation": "greater",
                     "right": "close"
                 },
                 {
                     "left": "VWMA",
-                    "operation": "less",
-                    "right": "high"
+                    "operation": "greater",
+                    "right": "low"
                 }
             ],
             "options": {
                 "lang": "en"
             },
             "markets": [
-                "indonesia"
+                "crypto"
             ],
             "symbols": {
                 "query": {
@@ -133,10 +109,30 @@ class ScannerTradingview:
                 "tickers": []
             },
             "columns": [
-                "name"
+                "base_currency_logoid",
+                "currency_logoid",
+                "name",
+                "close",
+                "change",
+                "change_abs",
+                "high",
+                "low",
+                "volume",
+                "24h_vol|5",
+                "24h_vol_change|5",
+                "Recommend.All",
+                "exchange",
+                "description",
+                "type",
+                "subtype",
+                "update_mode",
+                "pricescale",
+                "minmov",
+                "fractional",
+                "minmove2"
             ],
             "sort": {
-                "sortBy": "price_earnings_ttm",
+                "sortBy": "change",
                 "sortOrder": "desc"
             },
             "price_conversion": {
@@ -147,7 +143,7 @@ class ScannerTradingview:
                 150
             ]
         }'''
-        self.url = 'https://scanner.tradingview.com/indonesia/scan'
+        self.url = 'https://scanner.tradingview.com/crypto/scan'
 
     def getDataScanner(self):
         result = requests.post(self.url, data=self.requestJson)
