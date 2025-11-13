@@ -1,5 +1,5 @@
-import yfinance as yf
-
+import pandas as pd
+from yahooquery import Ticker
 from modules.config import *
 from modules.logic_process.stock_logic import *
 from concurrent.futures import ThreadPoolExecutor
@@ -12,16 +12,20 @@ class FilterProcessingStock:
     last_index = 0
 
     def GetHistoricalData(self, symbol, interval, date):
-        df = yf.download(tickers="{}.JK".format(symbol),
-                         period=date, interval=interval, timeout=60)
-        df = df.drop(['Adj Close'], axis=1)
+        t = Ticker("{}.JK".format(symbol))
+        df = t.history(period=date, interval=interval)
+        # reset MultiIndex menjadi kolom biasa
+        if isinstance(df.index, pd.MultiIndex):
+            df = df.reset_index()
         df = df.rename({'Date': 'date', 'Open': 'open', 'High': 'high',
                        'Low': 'low', 'Close': 'close', 'Volume': 'volume'}, axis=1)
+        df['date'] = pd.to_datetime(df['date'], utc=True).dt.tz_convert(None)
         df['open'] = df['open'].astype(float)
         df['close'] = df['close'].astype(float)
         df['low'] = df['low'].astype(float)
         df['high'] = df['high'].astype(float)
-        df['volume'] = df['volume'].astype(float)
+        df['volume'] = df['volume'].astype(float) 
+        df = df.set_index('date')
         return df
 
     def initial_dataset(self, symbol):
